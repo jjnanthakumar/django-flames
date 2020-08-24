@@ -1,0 +1,101 @@
+<!-- Author:  Nanthakumar -->
+
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    {% if successful_submit %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#exampleModal").modal('show');
+        });
+
+
+    </script>
+    {% endif %}
+</head>
+<body>
+
+<form action=""
+      method="post">
+
+    {% csrf_token %}
+    <div class="login-box">
+        <h1>Flames</h1>
+        <div class="textbox">
+            <i class="fas fa-user"></i>
+            <input type="text" name='n1' placeholder="Your Name">
+        </div>
+        <div class="textbox">
+            <i style="color: red" class="fas fa-user"></i>
+            <input style="color: red" type="text" name='n2' placeholder="Your Crush Name">
+        </div>
+        <div style="text-align: center">
+
+            <button type="submit" class="btn btn-outline-primary rounded-pill"> Check Relation</button>
+
+        </div>
+    </div>
+</form>
+
+
+<!-- Button to Open the Modal -->
+
+<!-- The Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <!-- Modal Header -->
+
+            <div class="modal-header">
+                <h4 class="new">Flame Game Result</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <h2 class="new">The Relation is : {{result}} </h2>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <a href="" role="button" class="btn btn-outline-primary rounded-pill"><span>Play Again</span></a>
+            </div>
+        </div>
+    </div>
+</div>
+{% if messages %}
+<div class="msg">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-6">
+                {% for message in messages %}
+                <div class="alert alert-danger rounded-pill">
+                    <div style="padding: 10px">
+                        <strong>{{ message }}</strong>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+</body>
+</html>
+
+<!-- Author:  Nanthakumar -->
