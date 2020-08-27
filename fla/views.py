@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib import messages
 from .models import Flames
 # Create your views here.
@@ -10,12 +10,9 @@ from collections import Counter
 # <!-- Author:  Nanthakumar -->
 
 def home(request):
+    f = Flames()
     n1 = request.POST.get('n1')
     n2 = request.POST.get('n2')
-    if request.method == "POST":
-        f = Flames()
-        if len(str(n1)) != 0 and len(str(n2)) != 0 and len(str(n1)) != len(str(n2)):
-            f.save()
     if len(str(n1)) == 0 or len(str(n2)) == 0:
         messages.error(request, "Please ensure that you have given some text in both fields")
         return render(request, 'home.html')
@@ -24,12 +21,18 @@ def home(request):
         return render(request, 'home.html')
     elif n1 == None and n2 == None:
         return render(request, 'home.html')
+    elif n1.isnumeric() or n2.isnumeric():
+        messages.error(request, "Please provide only valid names not numbers.")
+        return render(request, 'home.html')
     else:
-
         str1 = n1
         str2 = n2
-        str1 = str1.split()
-        str2 = str2.split()
+        if '.' in str1 or '.' in str2:
+            str1 = str1.split('.')
+            str2 = str2.split('.')
+        else:
+            str1 = str1.split()
+            str2 = str2.split()
         str1 = [i for i in str1 if len(i) > 1]
         str2 = [i for i in str2 if len(i) > 1]
         str1 = ''.join(str1)
@@ -56,36 +59,21 @@ def home(request):
                 else:
                     freq1[char] = 1
         res = sum(freq2.values()) + sum(freq1.values())
-        if res != 0:
-            pass
-        else:
-
-            return redirect('home')
-
-        dic = {'F': "Friends", 'L': "Love", 'A': "Affection", 'M': "Marriage", 'E': "Enemy", 'S': "Sibling"}
-        lst = ['F', 'L', 'A', 'M', 'E', 'S']
-        new_lst = []
+        dic = {'F': "Friends", 'L': "Love", 'A': "Affection", 'M': "Marriage", 'E': "Enemy", 'S': "Sister"}
+        lst = list(dic.keys())
         for i in range(6, 0, -1):
             r = res % i
-            if r != 0:
-                if len(new_lst) == 1:
-                    break
-                if len(lst) == 0:
-                    break
-                lst.pop(r - 1)
-                new_lst = lst[r - 1:]
-                if r >= 2:
-                    for r in range(r - 1):
-                        new_lst.append(lst[r])
-                lst = new_lst
-            elif r == 0:
-                if len(new_lst) == 1:
-                    break
-                if len(lst) == 0:
-                    break
-                lst.pop(-1)
-                new_lst = lst[r:]
-                lst = new_lst
-        final = dic.get(''.join(lst), "Sorry")
+            if len(lst) == 1 or len(lst) == 0:
+                break
+            lst.pop(r - 1)
+            if r - 1 > 0:
+                lst = lst[r - 1:] + lst[:r - 1]
+        final = dic.get(''.join(lst), "No relation")
+        if request.method == "POST":
+            f.n1 = n1
+            f.n2 = n2
+            f.res = str(final)
+            if len(str(n1)) != 0 and len(str(n2)) != 0 and str(final) != 'flames':
+                f.save()
         return render(request, 'home.html', {'result': final, 'successful_submit': True})
 # <!-- Author:  Nanthakumar -->
